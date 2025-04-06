@@ -1,4 +1,3 @@
-
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 canvas.width = 400;
@@ -21,15 +20,15 @@ function drawGifts() {
 
 function update() {
     if (gameOver) return;
+
     gifts.forEach(gift => {
         gift.y += gift.speed;
+
         if (gift.y > canvas.height) {
             gameOver = true;
-            console.log("Счёт отправлен:", score);
-            if (window.Telegram && Telegram.WebApp) {
-                Telegram.WebApp.sendData(JSON.stringify({ score }));
-            }
+            sendScoreToTelegram(); // ← вызываем при проигрыше
         }
+
         if (
             gift.y + 20 >= frog.y &&
             gift.x >= frog.x &&
@@ -39,18 +38,18 @@ function update() {
             gifts.splice(gifts.indexOf(gift), 1);
         }
     });
+
     if (Math.random() < 0.02) {
         gifts.push({ x: Math.random() * 380, y: 0, speed: 2 + Math.random() * 3 });
     }
 }
-
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawFrog();
     drawGifts();
     ctx.fillStyle = "black";
-    ctx.fillText(`Очки: ${score}`, 10, 20);
-    if (gameOver) ctx.fillText("Игра окончена", 150, 300);
+    ctx.fillText(`Score: ${score}`, 10, 20);
+    if (gameOver) ctx.fillText("Game Over", 150, 300);
 }
 
 document.addEventListener("keydown", (e) => {
@@ -64,3 +63,33 @@ function gameLoop() {
     requestAnimationFrame(gameLoop);
 }
 gameLoop();
+
+
+// === Добавлено для Telegram WebApp ===
+function sendScoreToTelegram() {
+    if (window.Telegram && Telegram.WebApp) {
+        console.log("Отправка счёта в Telegram:", score);
+        Telegram.WebApp.sendData(JSON.stringify({ score }));
+    }
+}
+
+// Пример: вызов после окончания игры
+// ВСТАВЬ ЭТО в нужное место, если у тебя уже есть функция типа endGame(), gameOver() и т.п.
+// Здесь просто для примера (ты можешь вызывать sendScoreToTelegram() при поражении)
+
+
+// --- Отправка очков в Telegram WebApp ---
+function sendScoreToTelegram(score) {
+    if (Telegram && Telegram.WebApp) {
+        Telegram.WebApp.sendData(JSON.stringify({
+            action: "submit_score",
+            score: score
+        }));
+    }
+}
+
+// Пример: вызов функции после завершения игры
+// Замените на ваш собственный триггер завершения игры
+function endGame() {
+    let finalScore = score;  // Замените на вашу переменную очков
+    sendScoreToTelegram(finalScore);
