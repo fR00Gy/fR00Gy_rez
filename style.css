@@ -1,0 +1,37 @@
+body {
+    font-family: sans-serif;
+    background: url('https://i.imgur.com/4hoqU0E.png') no-repeat center center fixed;
+    background-size: cover;
+    color: white;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+.hidden {
+    display: none;
+}
+
+button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    background: #444;
+    color: white;
+    transition: background 0.3s;
+}
+
+    button:hover {
+        background: #666;
+    }
+
+input {
+    padding: 10px;
+    font-size: 16px;
+    margin: 10px;
+    border-radius: 6px;
+    border: none;
+}
