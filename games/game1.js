@@ -26,7 +26,7 @@ export default function(container, user) {
   canvas.height = 500;
 
   const SUPABASE_URL = "https://uhrmsevxbnqjptpuhprp.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...";
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocm1zZXZ4Ym5xanB0cHVocHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxOTQzODksImV4cCI6MjA1OTc3MDM4OX0.odCOrZw7JZHzFyKYtTBYhUbPfH_6ieynTmW7AfwBJpM";
 
   const frogImg = new Image(); frogImg.src = "https://i.imgur.com/eLpERcH.png";
   const giftImg = new Image(); giftImg.src = "https://i.imgur.com/KvLJceM.png";
