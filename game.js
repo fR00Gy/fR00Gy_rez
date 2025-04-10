@@ -1,136 +1,142 @@
-const canvas = document.getElementById("gameCanvas");
-const ctx = canvas.getContext("2d");
+export function initGame(user) {
+    const SUPABASE_URL = "https://uhrmsevxbnqjptpuhprp.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocm1zZXZ4Ym5xanB0cHVocHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxOTQzODksImV4cCI6MjA1OTc3MDM4OX0.odCOrZw7JZHzFyKYtTBYhUbPfH_6ieynTmW7AfwBJpM"; // укоротить
 
-const frog = { x: 175, y: 500, width: 50, height: 50, speed: 5 };
-const gifts = [];
-let score = 0;
-let gameOver = false;
+    const canvas = document.getElementById("gameCanvas");
+    const ctx = canvas.getContext("2d");
+    canvas.width = 400;
+    canvas.height = 500;
 
-let gameState = "login"; // login, menu, playing
-let nickname = "";
-let cursorVisible = true;
+    const frogImg = new Image(); frogImg.src = "https://i.imgur.com/eLpERcH.png";
+    const giftImg = new Image(); giftImg.src = "https://i.imgur.com/KvLJceM.png";
+    const badGiftImg = new Image(); badGiftImg.src = "https://i.imgur.com/Z7RXVbr.png";
 
-setInterval(() => cursorVisible = !cursorVisible, 500);
+    let frogX = 155, frogY = 400;
+    const frogWidth = 50, frogHeight = 70;
 
-// 🎮 Игровые экраны
-function drawLoginScreen() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#fff";
-    ctx.font = "20px sans-serif";
-    ctx.fillText("Введите ник Telegram:", 80, 200);
-    ctx.fillStyle = "yellow";
-    ctx.fillText(nickname + (cursorVisible ? "_" : ""), 80, 240);
-    ctx.fillStyle = "#888";
-    ctx.font = "14px sans-serif";
-    ctx.fillText("Нажмите Enter, чтобы продолжить", 80, 280);
-}
+    const gifts = [];
+    const giftPositions = [0, 50, 100, 150, 200, 250, 300, 350];
+    let score = 0;
+    let lives = 3;
+    let giftSpeed = 2;
+    let spawnInterval = 2000;
+    let gameRunning = true;
+    let spawnTimer;
 
-function drawMainMenu() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#000";
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.fillStyle = "#fff";
-    ctx.font = "24px sans-serif";
-    ctx.fillText(`Привет, ${nickname}`, 100, 180);
-    ctx.fillText("1. Играть", 140, 240);
-    ctx.fillText("2. Лидерборд", 140, 280);
-}
+    document.getElementById("scoreDisplay").style.display = "block";
+    document.getElementById("livesDisplay").style.display = "block";
 
-function drawFrog() {
-    ctx.fillStyle = "green";
-    ctx.fillRect(frog.x, frog.y, frog.width, frog.height);
-}
+    document.getElementById("scoreDisplay").innerText = `Очки: ${score}`;
+    document.getElementById("livesDisplay").innerText = `Жизни: ${'❤️'.repeat(lives)}`;
 
-function drawGifts() {
-    ctx.fillStyle = "red";
-    gifts.forEach(gift => ctx.fillRect(gift.x, gift.y, 20, 20));
-}
+    document.getElementById("left").onclick = () => frogX = Math.max(frogX - 50, 0);
+    document.getElementById("right").onclick = () => frogX = Math.min(frogX + 50, canvas.width - frogWidth);
 
-function drawGame() {
-    drawFrog();
-    drawGifts();
-    ctx.fillStyle = "black";
-    ctx.font = "16px sans-serif";
-    ctx.fillText(`Очки: ${score}`, 10, 20);
-    if (gameOver) ctx.fillText("Игра окончена", 140, 300);
-}
-
-function updateGame() {
-    if (gameOver || gameState !== "playing") return;
-
-    gifts.forEach(gift => {
-        gift.y += gift.speed;
-
-        if (gift.y > canvas.height) {
-            gameOver = true;
-        }
-
-        if (
-            gift.y + 20 >= frog.y &&
-            gift.x >= frog.x &&
-            gift.x <= frog.x + frog.width
-        ) {
-            score++;
-            gifts.splice(gifts.indexOf(gift), 1);
-        }
-    });
-
-    if (Math.random() < 0.02) {
-        gifts.push({ x: Math.random() * 380, y: 0, speed: 2 + Math.random() * 3 });
-    }
-}
-
-// 🔁 Игровой цикл
-function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-    if (gameState === "login") {
-        drawLoginScreen();
-    } else if (gameState === "menu") {
-        drawMainMenu();
-    } else if (gameState === "playing") {
-        drawGame();
+    function drawFrog() {
+        ctx.drawImage(frogImg, frogX, frogY, frogWidth, frogHeight);
     }
 
-    requestAnimationFrame(draw);
-}
+    function drawGifts() {
+        gifts.forEach((g, i) => {
+            const img = g.bad ? badGiftImg : giftImg;
+            ctx.drawImage(img, g.x, g.y, 30, 30);
+            g.y += giftSpeed;
 
-function gameLoop() {
-    updateGame();
-    requestAnimationFrame(gameLoop);
-}
-draw();
-gameLoop();
-
-// 🕹️ Управление
-document.addEventListener("keydown", (e) => {
-    if (gameState === "login") {
-        if (e.key === "Backspace") {
-            nickname = nickname.slice(0, -1);
-        } else if (e.key === "Enter") {
-            if (nickname.length > 0) gameState = "menu";
-        } else if (e.key.length === 1 && nickname.length < 20) {
-            nickname += e.key;
-        }
-    } else if (gameState === "menu") {
-        if (e.key === "1") startGame();
-        if (e.key === "2") showLeaderboard();
-    } else if (gameState === "playing") {
-        if (e.key === "ArrowLeft" && frog.x > 0) frog.x -= frog.speed;
-        if (e.key === "ArrowRight" && frog.x < canvas.width - frog.width) frog.x += frog.speed;
+            // Попадание
+            if (g.y + 30 > frogY && Math.abs((g.x + 15) - (frogX + frogWidth / 2)) < 30) {
+                if (g.bad) {
+                    loseLife();
+                } else {
+                    score++;
+                    if (score % 5 === 0) {
+                        giftSpeed += 0.5;
+                        spawnInterval = Math.max(500, spawnInterval - 100);
+                        restartSpawning();
+                    }
+                }
+                gifts.splice(i, 1);
+                updateDisplay();
+            } else if (g.y > canvas.height) {
+                gifts.splice(i, 1);
+                if (!g.bad) loseLife();
+            }
+        });
     }
-});
 
-// 🔧 Функции
-function startGame() {
-    gameState = "playing";
-    gameOver = false;
-    score = 0;
-    gifts.length = 0;
-}
+    function updateDisplay() {
+        document.getElementById("scoreDisplay").innerText = `Очки: ${score}`;
+        document.getElementById("livesDisplay").innerText = `Жизни: ${'❤️'.repeat(lives)}`;
+    }
 
-function showLeaderboard() {
-    alert("Здесь будет лидерборд :)");
+    function loseLife() {
+        lives--;
+        updateDisplay();
+        if (lives <= 0) endGame();
+    }
+
+    function spawnGift() {
+        const x = giftPositions[Math.floor(Math.random() * giftPositions.length)];
+        const isBad = Math.random() < 0.3;
+        gifts.push({ x, y: 0, bad: isBad });
+    }
+
+    function startSpawning() {
+        spawnTimer = setInterval(spawnGift, spawnInterval);
+    }
+
+    function restartSpawning() {
+        clearInterval(spawnTimer);
+        startSpawning();
+    }
+
+    function endGame() {
+        gameRunning = false;
+        clearInterval(spawnTimer);
+        saveScoreToSupabase(score);
+        showLeaderboard();
+    }
+
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        if (!gameRunning) return;
+        drawFrog();
+        drawGifts();
+        requestAnimationFrame(draw);
+    }
+
+    function showLeaderboard() {
+        fetch(`${SUPABASE_URL}/rest/v1/scores?select=username,score&order=score.desc&limit=10`, {
+            headers: {
+                apikey: SUPABASE_KEY,
+                Authorization: `Bearer ${SUPABASE_KEY}`
+            }
+        })
+            .then(res => res.json())
+            .then(data => {
+                ctx.fillStyle = "white";
+                ctx.fillRect(50, 50, 300, 300);
+                ctx.fillStyle = "black";
+                ctx.font = "18px sans-serif";
+                ctx.fillText("Топ игроков:", 120, 80);
+                data.forEach((row, i) => {
+                    ctx.fillText(`${i + 1}. ${row.username}: ${row.score}`, 80, 110 + i * 25);
+                });
+            });
+    }
+
+    function saveScoreToSupabase(score) {
+        fetch(`${SUPABASE_URL}/rest/v1/scores`, {
+            method: 'POST',
+            headers: {
+                apikey: SUPABASE_KEY,
+                Authorization: `Bearer ${SUPABASE_KEY}`,
+                'Content-Type': 'application/json',
+                Prefer: 'return=minimal'
+            },
+            body: JSON.stringify({ user_id: user.id, username: user.name, score })
+        });
+    }
+
+    startSpawning();
+    draw();
 }
