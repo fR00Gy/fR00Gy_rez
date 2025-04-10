@@ -5,15 +5,15 @@ export default function initGame(user) {
       <button id="startBtn">Играть</button>
       <button id="leaderboardBtn">Топ игроков</button>
       <div id="info" style="margin-top: 10px;">
-        <div id="livesDisplay">Жизни: ❤️❤️❤️</div>
-        <div id="scoreDisplay">Очки: 0</div>
+        <div id="livesDisplay" style="display:none;">Жизни: ❤️❤️❤️</div>
+        <div id="scoreDisplay" style="display:none;">Очки: 0</div>
       </div>
-      <canvas id="gameCanvas" width="400" height="500"></canvas>
-      <div class="controls">
+      <canvas id="gameCanvas" width="400" height="500" style="display:none;"></canvas>
+      <div class="controls" style="display:none;">
         <img src="https://i.imgur.com/QUaEIk9.png" id="left" />
         <img src="https://i.imgur.com/05AB2sm.png" id="right" />
       </div>
-      <div id="leaderboard" style="margin-top: 20px;"></div>
+      <div id="leaderboard" style="display:none; margin-top: 20px;"></div>
     </div>
   `;
 
@@ -31,11 +31,18 @@ export default function initGame(user) {
   let gameRunning = false;
 
   const SUPABASE_URL = "https://uhrmsevxbnqjptpuhprp.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocm1zZXZ4Ym5xanB0cHVocHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxOTQzODksImV4cCI6MjA1OTc3MDM4OX0.odCOrZw7JZHzFyKYtTBYhUbPfH_6ieynTmW7AfwBJpM"; // сократи при необходимости
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocm1zZXZ4Ym5xanB0cHVocHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxOTQzODksImV4cCI6MjA1OTc3MDM4OX0.odCOrZw7JZHzFyKYtTBYhUbPfH_6ieynTmW7AfwBJpM"; // укороти на проде
 
   function startGame() {
     score = 0; lives = 3; giftSpeed = 2; spawnInterval = 2000;
     gifts.length = 0; gameRunning = true;
+
+    document.getElementById("gameCanvas").style.display = "block";
+    document.querySelector(".controls").style.display = "flex";
+    document.getElementById("livesDisplay").style.display = "block";
+    document.getElementById("scoreDisplay").style.display = "block";
+    document.getElementById("leaderboard").style.display = "none";
+
     updateDisplays();
     startSpawning();
   }
@@ -49,8 +56,10 @@ export default function initGame(user) {
       const img = g.bad ? badGiftImg : giftImg;
       ctx.drawImage(img, g.x, g.y, 30, 30);
       g.y += giftSpeed;
+
       if (g.y + 30 > frogY && Math.abs((g.x + 15) - (frogX + frogWidth / 2)) < 30) {
-        if (g.bad) loseLife(); else {
+        if (g.bad) loseLife();
+        else {
           score++;
           if (score % 5 === 0) {
             giftSpeed += 0.5;
@@ -117,6 +126,12 @@ export default function initGame(user) {
   }
 
   function fetchLeaderboard() {
+    document.getElementById("gameCanvas").style.display = "none";
+    document.querySelector(".controls").style.display = "none";
+    document.getElementById("livesDisplay").style.display = "none";
+    document.getElementById("scoreDisplay").style.display = "none";
+    document.getElementById("leaderboard").style.display = "block";
+
     fetch(`${SUPABASE_URL}/rest/v1/scores?select=username,score&order=score.desc&limit=10`, {
       headers: {
         'apikey': SUPABASE_KEY,
