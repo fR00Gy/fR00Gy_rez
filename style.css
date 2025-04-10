@@ -38,6 +38,13 @@ canvas {
   height: 500px;
 }
 
+#gameUI {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
 .controls {
   display: flex;
   justify-content: center;
@@ -60,6 +67,36 @@ table {
 }
 
 th, td {
-  padding: 5px 10px;
+  padding: 10px;
   border: 1px solid #ccc;
+  text-align: left;
+}
+
+#info {
+  margin-top: 10px;
+  font-size: 20px;
+}
+
+#register, #menu, #gameUI {
+  margin-top: 20px;
+}
+
+@media (max-width: 500px) {
+  button {
+    font-size: 16px;
+    padding: 8px 16px;
+  }
+
+  canvas {
+    height: 400px;
+  }
+
+  .controls img {
+    width: 50px;
+    height: 50px;
+  }
+
+  #info {
+    font-size: 18px;
+  }
 }
