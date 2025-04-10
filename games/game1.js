@@ -1,12 +1,24 @@
 // games/game1.js
-export function initGame(user) {
+export default function (container, user) {
+    container.innerHTML = `
+        <div style="margin-bottom: 10px;">
+            <div id="livesDisplay" style="color:white; font-size: 18px;">Жизни: ❤️❤️❤️</div>
+            <div id="scoreDisplay" style="color:white; font-size: 18px;">Очки: 0</div>
+        </div>
+        <canvas id="gameCanvas"></canvas>
+        <div class="controls" style="display:flex; justify-content: space-between; width:300px; margin:10px auto;">
+            <img src="https://i.imgur.com/QUaEIk9.png" id="left" style="width:60px; height:60px;">
+            <img src="https://i.imgur.com/05AB2sm.png" id="right" style="width:60px; height:60px;">
+        </div>
+    `;
+
     const canvas = document.getElementById("gameCanvas");
     const ctx = canvas.getContext("2d");
     canvas.width = 400;
     canvas.height = 500;
 
     const SUPABASE_URL = "https://uhrmsevxbnqjptpuhprp.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocm1zZXZ4Ym5xanB0cHVocHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxOTQzODksImV4cCI6MjA1OTc3MDM4OX0.odCOrZw7JZHzFyKYtTBYhUbPfH_6ieynTmW7AfwBJpM"; // обрежь на проде
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocm1zZXZ4Ym5xanB0cHVocHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxOTQzODksImV4cCI6MjA1OTc3MDM4OX0.odCOrZw7JZHzFyKYtTBYhUbPfH_6ieynTmW7AfwBJpM";
 
     const frogImg = new Image(); frogImg.src = "https://i.imgur.com/eLpERcH.png";
     const giftImg = new Image(); giftImg.src = "https://i.imgur.com/KvLJceM.png";
@@ -20,9 +32,6 @@ export function initGame(user) {
     const gifts = [];
     const giftPositions = [0, 50, 100, 150, 200, 250, 300, 350];
     let spawnTimer;
-
-    document.getElementById("scoreDisplay").style.display = "block";
-    document.getElementById("livesDisplay").style.display = "block";
 
     document.getElementById("livesDisplay").innerText = `Жизни: ❤️❤️❤️`;
     document.getElementById("scoreDisplay").innerText = `Очки: 0`;
@@ -57,9 +66,8 @@ export function initGame(user) {
             g.y += giftSpeed;
 
             if (g.y + 30 > frogY && Math.abs((g.x + 15) - (frogX + frogWidth / 2)) < 30) {
-                if (g.bad) {
-                    loseLife();
-                } else {
+                if (g.bad) loseLife();
+                else {
                     score++;
                     if (score % 5 === 0) {
                         giftSpeed += 0.5;
