@@ -1,10 +1,17 @@
 body {
   margin: 0;
+  padding: 0;
   font-family: sans-serif;
   background: url('https://i.imgur.com/4hoqU0E.png') no-repeat center center fixed;
   background-size: cover;
-  color: white;
   text-align: center;
+  color: white;
+}
+
+input {
+  padding: 10px;
+  font-size: 16px;
+  margin: 5px;
 }
 
 button {
@@ -14,37 +21,45 @@ button {
   background-color: #333;
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #555;
 }
 
 canvas {
+  background: rgba(255, 255, 255, 0.8);
   border: 5px solid #333;
-  background-color: rgba(255, 255, 255, 0.9);
-  max-width: 100%;
+  margin-top: 10px;
+  width: 100%;
+  max-width: 400px;
+  height: 500px;
 }
 
 .controls {
   display: flex;
   justify-content: center;
-  margin-top: 10px;
   gap: 40px;
+  margin-top: 10px;
 }
 
 .controls img {
-  width: 40px;
-  height: 40px;
-  cursor: pointer;
+  width: 60px;
+  height: 60px;
 }
 
-#leaderboard table {
-  margin: 0 auto;
-  background: rgba(0, 0, 0, 0.6);
+table {
   color: white;
+  background: rgba(0,0,0,0.5);
   border-collapse: collapse;
+  width: 90%;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
-#leaderboard th,
-#leaderboard td {
-  padding: 8px 12px;
-  border: 1px solid white;
+th, td {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
 }
