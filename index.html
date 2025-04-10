@@ -1,53 +1,49 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <title>Меню игр</title>
-  <style>
-    body { font-family: sans-serif; background: #222; color: white; text-align: center; }
-    .hidden { display: none; }
-    button { margin: 10px; padding: 10px 20px; font-size: 18px; }
-    input { padding: 10px; font-size: 16px; margin: 10px; }
-  </style>
+    <meta charset="UTF-8" />
+    <title>Меню игр</title>
+    <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Выбор игры</h1>
-  <div id="register">
-    <p>Введите ник:</p>
-    <input id="nickname" placeholder="Ваш ник" />
-    <br />
-    <button onclick="saveNickname()">Продолжить</button>
-  </div>
+    <h1>Выбор игры</h1>
 
-  <div id="menu" class="hidden">
-    <h2>Игры</h2>
-    <button onclick="loadGame('game1')">Играть: Лови подарки</button>
-  </div>
+    <div id="register">
+        <p>Введите ник:</p>
+        <input id="nickname" placeholder="Ваш ник" />
+        <br />
+        <button onclick="saveNickname()">Продолжить</button>
+    </div>
 
-  <div id="game" class="hidden"></div>
+    <div id="menu" class="hidden">
+        <h2>Игры</h2>
+        <button onclick="loadGame('game1')">Играть: Лови подарки</button>
+    </div>
 
-<script>
-let user = { id: "anonymous", name: "Гость" };
-function saveNickname() {
-  const input = document.getElementById("nickname");
-  const nickname = input.value.trim();
-  if (nickname.length < 2) {
-    alert("Введите ник (минимум 2 символа)");
-    return;
-  }
-  user.name = nickname;
-  document.getElementById("register").classList.add("hidden");
-  document.getElementById("menu").classList.remove("hidden");
-}
+    <div id="game" class="hidden"></div>
 
-async function loadGame(gameName) {
-  const container = document.getElementById("game");
-  container.classList.remove("hidden");
-  document.getElementById("menu").classList.add("hidden");
-  const module = await import(`./games/${gameName}.js`);
-  module.default(container, user);
-}
-</script>
+    <script>
+        let user = { id: "anonymous", name: "Гость" };
+
+        function saveNickname() {
+            const input = document.getElementById("nickname");
+            const nickname = input.value.trim();
+            if (nickname.length < 2) {
+                alert("Введите ник (минимум 2 символа)");
+                return;
+            }
+            user.name = nickname;
+            document.getElementById("register").classList.add("hidden");
+            document.getElementById("menu").classList.remove("hidden");
+        }
+
+        async function loadGame(gameName) {
+            const container = document.getElementById("game");
+            container.classList.remove("hidden");
+            document.getElementById("menu").classList.add("hidden");
+            const module = await import(`./games/${gameName}.js`);
+            module.default(container, user);
+        }
+    </script>
 </body>
 </html>
