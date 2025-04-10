@@ -1,49 +1,53 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8" />
-    <title>Меню игр</title>
-    <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Игровое Меню</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-    <h1>Выбор игры</h1>
+  <h1>Выбор игры</h1>
 
-    <div id="register">
-        <p>Введите ник:</p>
-        <input id="nickname" placeholder="Ваш ник" />
-        <br />
-        <button onclick="saveNickname()">Продолжить</button>
-    </div>
+  <div id="register">
+    <p>Введите ник:</p>
+    <input id="nickname" placeholder="Ваш ник" />
+    <br />
+    <button onclick="saveNickname()">Продолжить</button>
+  </div>
 
-    <div id="menu" class="hidden">
-        <h2>Игры</h2>
-        <button onclick="loadGame('game1')">Играть: Лови подарки</button>
-    </div>
+  <div id="menu" style="display: none;">
+    <h2>Игры</h2>
+    <button onclick="loadGame('game1')">Играть: Лови подарки</button>
+  </div>
 
-    <div id="game" class="hidden"></div>
+  <div id="game" style="display: none;"></div>
 
-    <script>
-        let user = { id: "anonymous", name: "Гость" };
+  <script type="module">
+    const SUPABASE_URL = "https://uhrmsevxbnqjptpuhprp.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocm1zZXZ4Ym5xanB0cHVocHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxOTQzODksImV4cCI6MjA1OTc3MDM4OX0.odCOrZw7JZHzFyKYtTBYhUbPfH_6ieynTmW7AfwBJpM"; // сократи на проде
+    let user = { id: "anonymous", name: "Гость" };
 
-        function saveNickname() {
-            const input = document.getElementById("nickname");
-            const nickname = input.value.trim();
-            if (nickname.length < 2) {
-                alert("Введите ник (минимум 2 символа)");
-                return;
-            }
-            user.name = nickname;
-            document.getElementById("register").classList.add("hidden");
-            document.getElementById("menu").classList.remove("hidden");
-        }
+    function saveNickname() {
+      const nickname = document.getElementById("nickname").value.trim();
+      if (nickname.length < 2) {
+        alert("Введите ник (минимум 2 символа)");
+        return;
+      }
+      user.name = nickname;
+      document.getElementById("register").style.display = "none";
+      document.getElementById("menu").style.display = "block";
+    }
 
-        async function loadGame(gameName) {
-            const container = document.getElementById("game");
-            container.classList.remove("hidden");
-            document.getElementById("menu").classList.add("hidden");
-            const module = await import(`./games/${gameName}.js`);
-            module.default(container, user);
-        }
-    </script>
+    async function loadGame(gameName) {
+      document.getElementById("menu").style.display = "none";
+      document.getElementById("game").style.display = "block";
+      const module = await import(`./games/${gameName}.js`);
+      module.default(user);
+    }
+
+    window.saveNickname = saveNickname;
+    window.loadGame = loadGame;
+  </script>
 </body>
 </html>
