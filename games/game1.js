@@ -42,7 +42,8 @@ export default function initGame(user) {
     document.getElementById("livesDisplay").style.display = "block";
     document.getElementById("scoreDisplay").style.display = "block";
     document.getElementById("leaderboard").style.display = "none";
-
+    document.getElementById("startBtn").style.display = "none";
+    document.getElementById("leaderboardBtn").style.display = "none";
     updateDisplays();
     startSpawning();
   }
@@ -101,6 +102,8 @@ export default function initGame(user) {
       clearInterval(spawnTimer);
       saveScore();
       alert(`Игра окончена! Ваш счёт: ${score}`);
+      document.getElementById("startBtn").style.display = "inline-block";
+      document.getElementById("leaderboardBtn").style.display = "inline-block";
     }
   }
 
