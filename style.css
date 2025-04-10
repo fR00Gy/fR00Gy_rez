@@ -15,12 +15,18 @@ body, html {
     text-align: center;
 }
 
+#register, #menu {
+    margin-top: 30px;
+}
+
 #gameCanvas {
     background: rgba(255,255,255,0.7);
     border: 5px solid #333;
     width: 100vw;
     max-width: 400px;
     height: calc(100vh - 300px);
+    display: none;
+    margin-top: 20px;
 }
 
 button {
@@ -75,4 +81,9 @@ button:hover {
 #livesDisplay, #scoreDisplay {
     font-size: 20px;
     margin-top: 10px;
+    display: none;
+}
+
+.show {
+    display: block !important;
 }
