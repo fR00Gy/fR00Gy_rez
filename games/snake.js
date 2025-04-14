@@ -1,101 +1,101 @@
 export default function initSnakeGame(user) {
-  const game = document.getElementById("game");
+  const game = document.getElementById('game');
   game.innerHTML = `
     <div id="gameUI">
-      <button id="startBtn">Играть</button>
-      <button id="leaderboardBtn">Топ игроков</button>
-      <button id="backToMenuBtn">&larr; Назад</button>
+      <button id="startSnakeBtn">Играть</button>
+      <button id="leaderboardSnakeBtn">Топ игроков</button>
+      <button id="backToMenuBtn">\u2190 Назад</button>
       <div id="info" style="margin-top: 10px;">
-        <div id="scoreDisplay" style="display:none; color:black;">Очки: 0</div>
+        <div id="snakeScoreDisplay" style="display:none; color: black;">Очки: 0</div>
       </div>
-      <canvas id="gameCanvas" width="400" height="500" style="display:none;"></canvas>
-      <div id="leaderboard" style="display:none; margin-top: 20px;"></div>
+      <canvas id="snakeCanvas" width="400" height="400" style="display:none;"></canvas>
+      <div id="snakeLeaderboard" style="display:none; margin-top: 20px;"></div>
     </div>
   `;
 
-  const canvas = document.getElementById("gameCanvas");
+  const canvas = document.getElementById("snakeCanvas");
   const ctx = canvas.getContext("2d");
   const gridSize = 20;
-  const tileCount = 20;
-  let snake = [{ x: 10, y: 10 }];
-  let direction = { x: 0, y: 0 };
-  let food = { x: 15, y: 15 };
-  let score = 0;
-  let gameRunning = false;
-  let gameInterval;
+  let snake, direction, food, score, gameRunning = false, gameLoop;
 
   const SUPABASE_URL = "https://uhrmsevxbnqjptpuhprp.supabase.co";
-  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocm1zZXZ4Ym5xanB0cHVocHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxOTQzODksImV4cCI6MjA1OTc3MDM4OX0.odCOrZw7JZHzFyKYtTBYhUbPfH_6ieynTmW7AfwBJpM";
+  const SUPABASE_KEY = "ey...BJpM"; // обрежь на проде
 
-  function startGame() {
+  function startSnake() {
     snake = [{ x: 10, y: 10 }];
-    direction = { x: 0, y: 0 };
-    food = { x: 15, y: 15 };
+    direction = { x: 1, y: 0 };
+    food = spawnFood();
     score = 0;
     gameRunning = true;
 
-    document.getElementById("gameCanvas").style.display = "block";
-    document.getElementById("scoreDisplay").style.display = "block";
-    document.getElementById("leaderboard").style.display = "none";
-    document.getElementById("startBtn").style.display = "none";
-    document.getElementById("leaderboardBtn").style.display = "none";
+    document.getElementById("snakeCanvas").style.display = "block";
+    document.getElementById("snakeScoreDisplay").style.display = "block";
+    document.getElementById("snakeLeaderboard").style.display = "none";
+    document.getElementById("startSnakeBtn").style.display = "none";
+    document.getElementById("leaderboardSnakeBtn").style.display = "none";
 
-    gameInterval = setInterval(gameLoop, 150);
+    updateSnakeScore();
+    clearInterval(gameLoop);
+    gameLoop = setInterval(update, 150);
   }
 
-  function drawSquare(x, y, color) {
-    ctx.fillStyle = color;
-    ctx.fillRect(x * gridSize, y * gridSize, gridSize - 2, gridSize - 2);
-  }
-
-  function gameLoop() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  function update() {
     const head = { x: snake[0].x + direction.x, y: snake[0].y + direction.y };
 
     if (
-      head.x < 0 || head.x >= tileCount ||
-      head.y < 0 || head.y >= tileCount ||
-      snake.some(seg => seg.x === head.x && seg.y === head.y)
+      head.x < 0 || head.y < 0 ||
+      head.x >= canvas.width / gridSize || head.y >= canvas.height / gridSize ||
+      snake.some(segment => segment.x === head.x && segment.y === head.y)
     ) {
-      endGame();
+      gameRunning = false;
+      clearInterval(gameLoop);
+      saveScore();
+      alert(`Игра окончена! Ваш счёт: ${score}`);
+      document.getElementById("startSnakeBtn").style.display = "inline-block";
+      document.getElementById("leaderboardSnakeBtn").style.display = "inline-block";
       return;
     }
 
     snake.unshift(head);
     if (head.x === food.x && head.y === food.y) {
       score++;
-      food = {
-        x: Math.floor(Math.random() * tileCount),
-        y: Math.floor(Math.random() * tileCount)
-      };
+      food = spawnFood();
+      updateSnakeScore();
     } else {
       snake.pop();
     }
 
-    updateDisplays();
-    drawSquare(food.x, food.y, "red");
-    snake.forEach((s, i) => drawSquare(s.x, s.y, i === 0 ? "green" : "lime"));
+    draw();
   }
 
-  function updateDisplays() {
-    document.getElementById("scoreDisplay").innerText = `Очки: ${score}`;
+  function draw() {
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.fillStyle = "green";
+    snake.forEach(segment => ctx.fillRect(segment.x * gridSize, segment.y * gridSize, gridSize, gridSize));
+
+    ctx.fillStyle = "red";
+    ctx.fillRect(food.x * gridSize, food.y * gridSize, gridSize, gridSize);
   }
 
-  function endGame() {
-    clearInterval(gameInterval);
-    gameRunning = false;
-    saveScore();
-    alert(`Игра окончена! Ваш счёт: ${score}`);
-    document.getElementById("startBtn").style.display = "inline-block";
-    document.getElementById("leaderboardBtn").style.display = "inline-block";
+  function spawnFood() {
+    return {
+      x: Math.floor(Math.random() * (canvas.width / gridSize)),
+      y: Math.floor(Math.random() * (canvas.height / gridSize))
+    };
+  }
+
+  function updateSnakeScore() {
+    document.getElementById("snakeScoreDisplay").innerText = `Очки: ${score}`;
   }
 
   async function saveScore() {
     const { name: username, id: user_id } = user;
     const res = await fetch(`${SUPABASE_URL}/rest/v1/snake_scores?username=eq.${username}`, {
       headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
       }
     });
     const data = await res.json();
@@ -104,10 +104,10 @@ export default function initSnakeGame(user) {
       await fetch(`${SUPABASE_URL}/rest/v1/snake_scores`, {
         method: 'POST',
         headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`,
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
           'Content-Type': 'application/json',
-          Prefer: 'return=minimal'
+          'Prefer': 'return=minimal'
         },
         body: JSON.stringify({ user_id, username, score })
       });
@@ -116,43 +116,40 @@ export default function initSnakeGame(user) {
       await fetch(`${SUPABASE_URL}/rest/v1/snake_scores?id=eq.${id}`, {
         method: 'PATCH',
         headers: {
-          apikey: SUPABASE_KEY,
-          Authorization: `Bearer ${SUPABASE_KEY}`,
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({ score })
       });
     }
-
     fetchLeaderboard();
   }
 
   function fetchLeaderboard() {
-    document.getElementById("gameCanvas").style.display = "none";
-    document.getElementById("scoreDisplay").style.display = "none";
-    document.getElementById("leaderboard").style.display = "block";
+    document.getElementById("snakeCanvas").style.display = "none";
+    document.getElementById("snakeScoreDisplay").style.display = "none";
+    document.getElementById("snakeLeaderboard").style.display = "block";
 
     fetch(`${SUPABASE_URL}/rest/v1/snake_scores?select=username,score&order=score.desc&limit=5`, {
       headers: {
-        apikey: SUPABASE_KEY,
-        Authorization: `Bearer ${SUPABASE_KEY}`
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`
       }
     })
       .then(res => res.json())
-      .then(renderLeaderboard);
+      .then(data => {
+        const container = document.getElementById("snakeLeaderboard");
+        container.innerHTML = '<h3>Топ игроков</h3>';
+        const table = document.createElement("table");
+        table.innerHTML = `<tr><th>Имя</th><th>Очки</th></tr>` +
+          data.map(r => `<tr><td>${r.username}</td><td>${r.score}</td></tr>`).join('');
+        container.appendChild(table);
+      });
   }
 
-  function renderLeaderboard(data) {
-    const container = document.getElementById("leaderboard");
-    container.innerHTML = '<h3>Топ игроков</h3>';
-    const table = document.createElement("table");
-    table.innerHTML = `<tr><th>Имя</th><th>Очки</th></tr>` +
-      data.map(r => `<tr><td>${r.username}</td><td>${r.score}</td></tr>`).join('');
-    container.appendChild(table);
-  }
-
-  document.getElementById("startBtn").onclick = startGame;
-  document.getElementById("leaderboardBtn").onclick = fetchLeaderboard;
+  document.getElementById("startSnakeBtn").onclick = startSnake;
+  document.getElementById("leaderboardSnakeBtn").onclick = fetchLeaderboard;
   document.getElementById("backToMenuBtn").onclick = () => {
     document.getElementById("game").style.display = "none";
     document.getElementById("menu").style.display = "block";
@@ -160,6 +157,7 @@ export default function initSnakeGame(user) {
   };
 
   document.addEventListener("keydown", e => {
+    if (!gameRunning) return;
     switch (e.key) {
       case "ArrowUp": if (direction.y === 0) direction = { x: 0, y: -1 }; break;
       case "ArrowDown": if (direction.y === 0) direction = { x: 0, y: 1 }; break;
