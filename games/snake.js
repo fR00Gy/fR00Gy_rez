@@ -27,6 +27,9 @@ export default function initSnakeGame(user) {
   const ctx = canvas.getContext("2d");
   const gridSize = 20;
   let snake, direction, food, score, gameRunning = false, gameLoop;
+  
+   const foodImg = new Image();
+  foodImg.src = "https://i.imgur.com/KvLJceM.png";
 
   const SUPABASE_URL = "https://uhrmsevxbnqjptpuhprp.supabase.co";
   const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocm1zZXZ4Ym5xanB0cHVocHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxOTQzODksImV4cCI6MjA1OTc3MDM4OX0.odCOrZw7JZHzFyKYtTBYhUbPfH_6ieynTmW7AfwBJpM"; // обрежь на проде
