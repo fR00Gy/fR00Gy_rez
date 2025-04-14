@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <h1>Выбор игры</h1>
+  <h1>Меню</h1>
 
   <div id="register">
     <p>Введите ник:</p>
@@ -19,13 +19,14 @@
   <div id="menu" style="display: none;">
     <h2>Игры</h2>
     <button onclick="loadGame('game1')">Играть: Лови подарки</button>
+    <button onclick="loadGame('snake')">Играть: Змейка</button>
   </div>
 
   <div id="game" style="display: none;"></div>
 
   <script type="module">
     const SUPABASE_URL = "https://uhrmsevxbnqjptpuhprp.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocm1zZXZ4Ym5xanB0cHVocHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxOTQzODksImV4cCI6MjA1OTc3MDM4OX0.odCOrZw7JZHzFyKYtTBYhUbPfH_6ieynTmW7AfwBJpM"; // сократи на проде
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocm1zZXZ4Ym5xanB0cHVocHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxOTQzODksImV4cCI6MjA1OTc3MDM4OX0.odCOrZw7JZHzFyKYtTBYhUbPfH_6ieynTmW7AfwBJpM";
     let user = { id: "anonymous", name: "Гость" };
 
     function saveNickname() {
