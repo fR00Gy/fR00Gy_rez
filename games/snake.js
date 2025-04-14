@@ -4,11 +4,21 @@ export default function initSnakeGame(user) {
     <div id="gameUI">
       <button id="startSnakeBtn">Играть</button>
       <button id="leaderboardSnakeBtn">Топ игроков</button>
-      <button id="backToMenuBtn">\u2190 Назад</button>
+      <button id="backToMenuBtn">← Назад</button>
       <div id="info" style="margin-top: 10px;">
         <div id="snakeScoreDisplay" style="display:none; color: black;">Очки: 0</div>
       </div>
       <canvas id="snakeCanvas" width="400" height="400" style="display:none;"></canvas>
+      <div class="snake-controls" style="display:none; margin-top: 10px;">
+        <div style="display: flex; justify-content: center; gap: 10px;">
+          <button id="upBtn">⬆️</button>
+        </div>
+        <div style="display: flex; justify-content: center; gap: 10px; margin-top: 5px;">
+          <button id="leftBtn">⬅️</button>
+          <button id="downBtn">⬇️</button>
+          <button id="rightBtn">➡️</button>
+        </div>
+      </div>
       <div id="snakeLeaderboard" style="display:none; margin-top: 20px;"></div>
     </div>
   `;
@@ -19,7 +29,7 @@ export default function initSnakeGame(user) {
   let snake, direction, food, score, gameRunning = false, gameLoop;
 
   const SUPABASE_URL = "https://uhrmsevxbnqjptpuhprp.supabase.co";
-  const SUPABASE_KEY = "ey...BJpM"; // обрежь на проде
+  const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVocm1zZXZ4Ym5xanB0cHVocHJwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQxOTQzODksImV4cCI6MjA1OTc3MDM4OX0.odCOrZw7JZHzFyKYtTBYhUbPfH_6ieynTmW7AfwBJpM"; // обрежь на проде
 
   function startSnake() {
     snake = [{ x: 10, y: 10 }];
@@ -30,6 +40,7 @@ export default function initSnakeGame(user) {
 
     document.getElementById("snakeCanvas").style.display = "block";
     document.getElementById("snakeScoreDisplay").style.display = "block";
+    document.querySelector(".snake-controls").style.display = "block";
     document.getElementById("snakeLeaderboard").style.display = "none";
     document.getElementById("startSnakeBtn").style.display = "none";
     document.getElementById("leaderboardSnakeBtn").style.display = "none";
@@ -129,6 +140,7 @@ export default function initSnakeGame(user) {
   function fetchLeaderboard() {
     document.getElementById("snakeCanvas").style.display = "none";
     document.getElementById("snakeScoreDisplay").style.display = "none";
+    document.querySelector(".snake-controls").style.display = "none";
     document.getElementById("snakeLeaderboard").style.display = "block";
 
     fetch(`${SUPABASE_URL}/rest/v1/snake_scores?select=username,score&order=score.desc&limit=5`, {
@@ -165,4 +177,17 @@ export default function initSnakeGame(user) {
       case "ArrowRight": if (direction.x === 0) direction = { x: 1, y: 0 }; break;
     }
   });
+
+  document.getElementById("upBtn").onclick = () => {
+    if (direction.y === 0) direction = { x: 0, y: -1 };
+  };
+  document.getElementById("downBtn").onclick = () => {
+    if (direction.y === 0) direction = { x: 0, y: 1 };
+  };
+  document.getElementById("leftBtn").onclick = () => {
+    if (direction.x === 0) direction = { x: -1, y: 0 };
+  };
+  document.getElementById("rightBtn").onclick = () => {
+    if (direction.x === 0) direction = { x: 1, y: 0 };
+  };
 }
