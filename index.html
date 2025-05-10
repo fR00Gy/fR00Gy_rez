@@ -1,65 +1,75 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Денис Деев — Геймдизайнер</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #111;
-            color: #f0f0f0;
-            margin: 0;
-            padding: 0;
-        }
-
-        .container {
-            max-width: 900px;
-            margin: auto;
-            padding: 40px 20px;
-        }
-
-        h1, h2 {
-            color: #00ffe5;
-        }
-
-        a {
-            color: #00bfff;
-            text-decoration: none;
-        }
-
-        .pdf-link {
-            display: block;
-            margin: 10px 0;
-            font-weight: bold;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 40px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Денис Деев — Геймдизайнер</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #111;
+      color: #f0f0f0;
+      margin: 0;
+      padding: 0;
+    }
+    .container {
+      max-width: 900px;
+      margin: auto;
+      padding: 40px 20px;
+    }
+    h1, h2 {
+      color: #00ffe5;
+    }
+    a {
+      color: #00bfff;
+      text-decoration: none;
+    }
+    .pdf-link {
+      display: block;
+      margin: 10px 0;
+      font-weight: bold;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    iframe {
+      width: 100%;
+      height: 800px;
+      border: none;
+      margin-top: 20px;
+    }
+    ul {
+      padding-left: 20px;
+    }
+    li {
+      margin: 6px 0;
+    }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>Денис Деев</h1>
-            <p>Геймдизайнер / Соло-разработчик</p>
-        </div>
-
-        <section class="resume">
-            <h2>Резюме</h2>
-            <p>Ниже можно скачать или просмотреть мое резюме:</p>
-            <a href="Denis_Deev_Resume.pdf" target="_blank">Скачать резюме (PDF)</a>
-        </section>
-
-        <section class="cases">
-            <h2>Кейсы и проекты</h2>
-            <p>Мои работы, собранные в виде кейсов:</p>
-            <a href="Case_1.pdf" target="_blank">Кейс 1: Pixel Pioner — GDD</a><br>
-            <a href="Case_2.pdf" target="_blank">Кейс 2: Telegram</a><br>
-            <a href="Case_3.pdf" target="_blank">Кейс 3: CGI + AI Ассеты</a>
-        </section>
+  <div class="container">
+    <div class="header">
+      <h1>Денис Деев</h1>
+      <p>Геймдизайнер / Соло-разработчик</p>
     </div>
+
+    <section class="resume">
+      <h2>Резюме</h2>
+      <p>Ниже можно скачать или просмотреть мое резюме:</p>
+      <a class="pdf-link" href="Denis_Deev_Resume.pdf" target="_blank">Скачать резюме (PDF)</a>
+      <iframe src="Denis_Deev_Resume.pdf"></iframe>
+    </section>
+
+    <section class="cases">
+      <h2>Кейсы и проекты</h2>
+      <p>Мои работы, собранные в виде кейсов:</p>
+      <ul>
+        <li><a href="Case_1.pdf" target="_blank">Кейс 1: Pixel Pioner — GDD</a></li>
+        <li><a href="Case_2.pdf" target="_blank">Кейс 2: Telegram</a></li>
+        <li><a href="Case_3.pdf" target="_blank">Кейс 3: CGI + AI Ассеты</a></li>
+      </ul>
+    </section>
+  </div>
 </body>
 </html>
